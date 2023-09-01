@@ -1,0 +1,55 @@
+**— Test Starts Here —**
+
+1. Select users whose id is either 3,2 or 4
+- Please return at least: all user fields
+--ANS : SELECT `users`.`id`,
+    `users`.`first_name`,
+    `users`.`last_name`,
+    `users`.`email`,
+    `users`.`status`,
+    `users`.`created`
+FROM `world`.`users` where id IN (3,2,4);
+==============================================================================
+2. Count how many basic and premium listings each active user has
+- Please return at least: first_name, last_name, basic, premium
+
+--ANS : select COUNT(listings.status) AS ListingStatus, users.first_name,users.last_name,listings.status from listings JOIN users ON listings.user_id = users.id where listings.status IN(2,3) AND users.status = 2 GROUP BY users.first_name,listings.status
+==============================================================================
+3. Show the same count as before but only if they have at least ONE premium listing
+- Please return at least: first_name, last_name, basic, premium
+
+--ANS : select COUNT(listings.status) AS ListingStatus, users.first_name,users.last_name,listings.status from listings JOIN users ON listings.user_id = users.id where listings.status IN(3) AND users.status = 2 GROUP BY users.first_name,listings.status
+================================================================================
+4. How much revenue has each active vendor made in 2013
+- Please return at least: first_name, last_name, currency, revenue
+
+--ANS : SELECT users.first_name,users.last_name, clicks.currency,clicks.price AS revenue FROM clicks JOIN listings ON  clicks.listing_id = listings.id JOIN users ON listings.user_id = users.id where year(clicks.created) = 2013 Group By users.first_name;
+================================================================================
+5. Insert a new click for listing id 3, at $4.00
+- Find out the id of this new click. Please return at least: id
+
+--ANS : INSERT INTO `world`.`clicks`
+(
+`listing_id`,
+`price`,
+`currency`,
+`created`)
+VALUES
+(3,4.00,'USD',now());
+
+Select query -- SELECT * FROM world.clicks order by id desc;
+=================================================================================
+6. Show listings that have not received a click in 2013
+- Please return at least: listing_name
+
+--ANS : select listings.name AS Listing_Name from listings JOIN clicks ON listings.id = clicks.listing_id where year(clicks.created) != 2013
+==================================================================================
+7. For each year show number of listings clicked and number of vendors who owned these listings
+- Please return at least: date, total_listings_clicked, total_vendors_affected
+
+--ANS : select COUNT(clicks.listing_id) , COUNT(listings.user_id), clicks.created from listings JOIN clicks ON listings.id = clicks.listing_id JOIN users ON listings.user_id = users.id Group by clicks.created
+==================================================================================
+8. Return a comma separated string of listing names for all active vendors
+- Please return at least: first_name, last_name, listing_names
+
+--ANS : select CONCAT(users.first_name,',',users.last_name,',',listings.name) from users JOIN listings ON users.id = listings.user_id where users.status = 2 group by listings.name
